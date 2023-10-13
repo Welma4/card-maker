@@ -1,74 +1,88 @@
-type Canvas = {
-    color: string;
-    size: number;
-    filter: Filter;
-    objects: Array<TextBlock|ImageBlock|ArtObjectBlock>
-}
 
-type Char = {
+export type Canvas = {
+    name: string;
+    color: Color;
+    size: Size;
+    filter: Filter;
+    objects: Array<TextBlock|ImageBlock|ArtObjectBlock>;
+    format: Format;
+};
+
+export type Char = {
     value: string;
     fontSize: number;
     fontFamily: string;
-    color: string;
+    color: Color;
+    underlined: boolean;
+    italics: boolean;
     bold: boolean;
 };
 
-type Position = {
+export type Format = 'PNG' | 'JPEG'
+
+export type Position = {
    x: number;
    y: number;
+   z: number;
 };
 
-type Size = {
+export type Size = {
    width: number;
    height: number;
-}
+};
 
-type Filter = 'grey' | 'red' | 'blue' | 'green' | null
+export type Filter = 'grey' | 'red' | 'blue' | 'green' | null
+
+export type Color = 'red' | 'blue' | 'green' | 'yellow' | 'orange' | 'purple' | 'white' | 'black'
  
-type Block = {
-    id: string;
+export type Block = {
+    id: number;
     position: Position;
     size: Size;
 };
 
-type TextBlock = Block & {
+export type TextBlock = Block & {
    type: 'text';
    data: Array<Char>;
 };
 
-type ImageBlock = Block & {
+export type ImageBlock = Block & {
    type: 'image';
-   data: string;
+   url: string;
 };
 
-type ArtObjectBlock = Block & {
+export type ArtObjectBlock = Block & {
    type: 'art-object';
    object: ArtObjects;
-   color: string;
+   color: Color;
 };
 
-type ArtObjects = 'ellipse' | 'rectangle' | 'triangle' | 'cirlce' | 'star';
- 
-type Doc = {
+export type ArtObjects = 'ellipse' | 'rectangle' | 'triangle' | 'cirlce' | 'star';
+    
+export type Doc = {
     page: Canvas;
 }
 
-type ActionHistory = Array<Action>
+export type ActionHistory = Array<Action>
 
-type Action = {
+export type CanceledActions = Array<Action>
+
+export type Action = {
+    id: number;
     action: string;
 }
 
-type Template = {
+export type Template = {
     style: string;
+    color: Color;
     size: Size;
 }
 
-type ExportObject = {
+export type ExportObject = {
     canvas: Canvas;
 }
 
-type Fragment = {
+export type Fragment = {
     position: Position;
     size: number;
 }
