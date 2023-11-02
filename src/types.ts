@@ -4,7 +4,7 @@ export type Canvas = {
     color: Color;
     size: Size;
     filter: Filter;
-    objects: Array<TextBlock|ImageBlock|ArtObjectBlock>;
+    objects: Array<TextBlock | ImageBlock | ArtObjectBlock>;
     format: Format;
 };
 
@@ -21,20 +21,23 @@ export type Char = {
 export type Format = 'PNG' | 'JPEG'
 
 export type Position = {
-   x: number;
-   y: number;
-   z: number;
+    x: number;
+    y: number;
+    z: number;
 };
 
 export type Size = {
-   width: number;
-   height: number;
+    width: number;
+    height: number;
 };
 
-export type Filter = 'grey' | 'red' | 'blue' | 'green' | null
+export type Filter = {
+    color: Color;
+    opacity: number;
+}
 
-export type Color = 'red' | 'blue' | 'green' | 'yellow' | 'orange' | 'purple' | 'white' | 'black'
- 
+export type Color = 'red' | 'blue' | 'green' | 'yellow' | 'orange' | 'purple' | 'white' | 'black' | '#d9a8a8'
+
 export type Block = {
     id: number;
     position: Position;
@@ -42,30 +45,34 @@ export type Block = {
 };
 
 export type TextBlock = Block & {
-   type: 'text';
-   data: Array<Char>;
+    type: 'text';
+    data: Array<string>;
+    fontSize: number,
+    fontFamily: string,
+    color: string,
+    underlined: boolean,
+    italics: boolean,
+    bold: boolean
 };
 
 export type ImageBlock = Block & {
-   type: 'image';
-   url: string;
+    type: 'image';
+    url: string;
 };
 
 export type ArtObjectBlock = Block & {
-   type: 'art-object';
-   object: ArtObjects;
-   color: Color;
+    type: 'art-object';
+    object: ArtObjects;
+    color: Color;
 };
 
-export type ArtObjects = 'ellipse' | 'rectangle' | 'triangle' | 'cirlce' | 'star';
-    
+export type ArtObjects = 'ellipse' | 'rectangle' | 'triangle' | 'star';
+
 export type Doc = {
     page: Canvas;
 }
 
 export type ActionHistory = Array<Action>
-
-export type CanceledActions = Array<Action>
 
 export type Action = {
     id: number;

@@ -1,0 +1,6 @@
+.page {
+    overflow: hidden;
+    background: 'white';
+    position: absolute;
+    border: 1px black solid;
+}

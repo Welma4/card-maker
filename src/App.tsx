@@ -1,25 +1,28 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import ImageView from './components/ImageView/ImageView';
+import { image1Block } from './maxData';
+import { doc } from './maxData';
+import { Canvas } from './types';
+import CanvasView from './components/CanvasView/CanvasView';
 
-function App() {
+
+
+const App = () => {
+  const Canv: Canvas = {
+      name: doc.page.name,
+      color: doc.page.color,
+      size: doc.page.size,
+      filter: doc.page.filter,
+      objects: [...doc.page.objects],
+      format: doc.page.format
+
+  } 
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+       <CanvasView {...Canv} />
     </div>
+    
   );
 }
 
