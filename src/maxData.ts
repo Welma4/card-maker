@@ -1,8 +1,8 @@
 import { Canvas, Size, ActionHistory, Doc, Action, Position, Block, TextBlock, ArtObjectBlock, ArtObjects, Color, ImageBlock, Filter } from './types'
 
 const canvSize: Size = {
-    width: 1580,
-    height: 880
+    width: 1900,
+    height: 800
 }
 
 const filter: Filter =
@@ -31,10 +31,10 @@ const text1: Block = {
 const textBlock1: TextBlock = {
     ...text1,
     type: 'text',
-    data: ["ASASDDSADSA", "TEXT"],
+    data: ["test", "TEXT", "HELLO WORLD!"],
     fontSize: 18,
     fontFamily: 'Georgia',
-    color: 'green',
+    color: 'red',
     underlined: false,
     italics: false,
     bold: false
@@ -46,12 +46,12 @@ const ellipse: ArtObjects = 'ellipse'
 const ellipsePos: Position = {
     x: 100,
     y: 100,
-    z: 0
+    z: 10
 }
 
 const ellipseSize: Size = {
-    width: 30,
-    height: 30
+    width: 120,
+    height: 100
 }
 
 const ellipseColor: Color = 'green'
@@ -72,13 +72,13 @@ const ellipseBlock: ArtObjectBlock = {
 const rectangle: ArtObjects = 'rectangle'
 
 const rectanglePos: Position = {
-    x: 122,
-    y: 255,
+    x: 222,
+    y: 25,
     z: 0
 }
 
 const rectangleSize: Size = {
-    width: 170,
+    width: 130,
     height: 155
 }
 
@@ -107,7 +107,7 @@ const trianglePos: Position = {
 
 const triangleSize: Size = {
     width: 240,
-    height: 35
+    height: 85
 }
 
 const triangleColor: Color = 'black'
@@ -126,14 +126,14 @@ const triangleBlock: ArtObjectBlock = {
 }
 
 const image1Pos: Position = {
-    x: 16,
-    y: 224,
+    x: 616,
+    y: 424,
     z: 1
 };
 
 const image1Size: Size = {
-    width: 900,
-    height: 600
+    width: 500,
+    height: 300
 };
 
 const image1: Block = {
