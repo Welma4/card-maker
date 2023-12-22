@@ -1,4 +1,9 @@
 .TextBlock {
     margin: 0;
+    resize: none;
+}
+
+.textContainer {
+    margin: 0;
     position: absolute;
 }

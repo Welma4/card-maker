@@ -1,3 +1,11 @@
-.rectangle .triangle .ellipse image svg {
+.container {
     position: absolute;
+}
+
+.rectangle,
+.ellipse,
+.triangle {
+    position: absolute;
+    top: 0;
+    left: 0;
 }

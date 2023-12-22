@@ -1,8 +1,8 @@
 import { Canvas, Size, ActionHistory, Doc, Action, Position, Block, TextBlock, ArtObjectBlock, ArtObjects, Color, ImageBlock, Filter } from './types'
 
 const canvSize: Size = {
-    width: 1900,
-    height: 800
+    width: 1200,
+    height: 700
 }
 
 const filter: Filter =

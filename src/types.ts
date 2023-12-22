@@ -1,11 +1,16 @@
+export const ActionTypes = {
+    SET_TEXTS: 'SET_TEXTS',
+    SET_TEXT_TOOL_ACTIVE: 'SET_TEXT_TOOL_ACTIVE',
+  };
+
 
 export type Canvas = {
-    name: string;
+    name: string | undefined;
     color: Color;
     size: Size;
     filter: Filter;
     objects: Array<TextBlock | ImageBlock | ArtObjectBlock>;
-    format: Format;
+    format: Format | undefined;
 };
 
 export type Char = {
@@ -36,7 +41,8 @@ export type Filter = {
     opacity: number;
 }
 
-export type Color = 'red' | 'blue' | 'green' | 'yellow' | 'orange' | 'purple' | 'white' | 'black' | '#d9a8a8'
+// export type Color = 'red' | 'blue' | 'green' | 'yellow' | 'orange' | 'purple' | 'white' | 'black' | '#d9a8a8'
+export type Color = string
 
 export type Block = {
     id: number;
@@ -63,7 +69,7 @@ export type ImageBlock = Block & {
 export type ArtObjectBlock = Block & {
     type: 'art-object';
     object: ArtObjects;
-    color: Color;
+    color: string;
 };
 
 export type ArtObjects = 'ellipse' | 'rectangle' | 'triangle' | 'star';

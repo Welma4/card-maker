@@ -1,0 +1,18 @@
+.button {
+    position: relative;
+    width: 260px;
+    height: 22px;
+    background-color: rgb(28, 95, 28);
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    color: rgb(116, 221, 139);
+    
+}
+
+.error {
+    position: relative;
+    color: red;
+    font-size: 10px;
+}
