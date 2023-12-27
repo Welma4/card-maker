@@ -1,21 +1,74 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ArtObjectBlock } from "../../types";
 import style from "./ArtObjects.module.css";
-import useDragAndDrop from '../DragAndDrop/DragAndDrop';
 import useResizeAndDrag from '../Resize/Resize';
 
 type Position = { x: number; y: number };
 
-interface ImageViewProps extends ArtObjectBlock {
+interface ArtObjectViewProps extends ArtObjectBlock {
     selected: boolean | null;
     onSelect: (id: number, type: string) => void;
+    rectangles: ArtObjectBlock[];
+    ellipses: ArtObjectBlock[];
+    triangles: ArtObjectBlock[];
+    setRectangles: React.Dispatch<React.SetStateAction<ArtObjectBlock[]>>;
+    setEllipses: React.Dispatch<React.SetStateAction<ArtObjectBlock[]>>;
+    setTriangles: React.Dispatch<React.SetStateAction<ArtObjectBlock[]>>;
 }
 
-const ArtObjectView = (props: ImageViewProps) => {
+const ArtObjectView = (props: ArtObjectViewProps) => {
     const [position, setPosition] = useState<Position>({ x: props.position.x, y: props.position.y });
-    // const ref = useDragAndDrop(setPosition);
     const [size, setSize] = useState<{ width: number; height: number }>({ width: props.size.width, height: props.size.height });
     const ref = useResizeAndDrag(setPosition, setSize);
+
+    useEffect(() => {
+        if (props.id !== undefined) {
+            let updatedObjects: ArtObjectBlock[];
+            switch (props.object) {
+                case "rectangle":
+                    updatedObjects = props.rectangles.map((obj) => {
+                        if (obj.id === props.id) {
+                            return {
+                                ...obj,
+                                position: { x: position.x, y: position.y, z: props.position.z },
+                                size: { width: size.width, height: size.height }
+                            };
+                        }
+                        return obj;
+                    });
+                    props.setRectangles(updatedObjects);
+                    break;
+                case "ellipse":
+                    updatedObjects = props.ellipses.map((obj) => {
+                        if (obj.id === props.id) {
+                            return {
+                                ...obj,
+                                position: { x: position.x, y: position.y, z: props.position.z },
+                                size: { width: size.width, height: size.height }
+                            };
+                        }
+                        return obj;
+                    });
+                    props.setEllipses(updatedObjects);
+                    break;
+                case "triangle":
+                    updatedObjects = props.triangles.map((obj) => {
+                        if (obj.id === props.id) {
+                            return {
+                                ...obj,
+                                position: { x: position.x, y: position.y, z: props.position.z },
+                                size: { width: size.width, height: size.height }
+                            };
+                        }
+                        return obj;
+                    });
+                    props.setTriangles(updatedObjects);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }, [position, size]);
 
     const obj = props.object;
     const svgStyleProps = {
@@ -27,10 +80,12 @@ const ArtObjectView = (props: ImageViewProps) => {
         z: props.position.z,
         border: props.selected ? '1px dashed red' : 'none',
     }
+
     const dimensions = {
         width: size.width,
         height: size.height
     }
+
     const styleProps = {
         width: dimensions.width,
         height: dimensions.height,
@@ -43,9 +98,6 @@ const ArtObjectView = (props: ImageViewProps) => {
         props.onSelect(props.id, props.type);
     }
 
-    const topLeft = { x: props.position.x, y: props.position.y };
-    const bottomRight = { x: props.position.x + props.size.width, y: props.position.y + props.size.height };
-
     return (
         <div
             className={style.container}
@@ -53,6 +105,14 @@ const ArtObjectView = (props: ImageViewProps) => {
             ref={ref}
             onClick={handleClick}
         >
+            {props.selected && (
+                <>
+                    <div className={`${style.handle} ${style.topLeft}`} />
+                    <div className={`${style.handle} ${style.topRight}`} />
+                    <div className={`${style.handle} ${style.bottomLeft}`} />
+                    <div className={`${style.handle} ${style.bottomRight}`} />
+                </>
+            )}
             {obj === "rectangle" && (
                 <div className={style.rectangle}>
                     <svg style={svgStyleProps}>

@@ -41,7 +41,6 @@ const nullFilter: Filter = {
 
 const canvas: Canvas = {
     name: 'nameless',
-    color: 'white',
     size: canvSize,
     filter: nullFilter,
     objects: [textBlock1],

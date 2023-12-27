@@ -13,6 +13,8 @@ import boldIcon from '../../images/bold-icon.svg';
 import clearIcon from '../../images/clear.svg'
 import deleteIcon from '../../images/delete-icon.svg';
 import FontFamilyMenu from '../FontFamilyMenu/FontFamilyMenu';
+import leftArrowIcon from '../../images/left-arrow-icon.svg';
+import rightArrowIcon from '../../images/right-arrow-icon.svg';
 
 interface HeaderProps {
   onTextToolClick: () => void;
@@ -34,6 +36,8 @@ interface HeaderProps {
   selectedValue: string;
   onSelectedValueChange: (value: string) => void;
   onSelectedFamilyChange: (value: string) => void;
+  onUndo: () => void;
+  onRedo: () => void;
 }
 
 export default function Header({ onTextToolClick,
@@ -54,6 +58,8 @@ export default function Header({ onTextToolClick,
   bold,
   onSelectedValueChange,
   onSelectedFamilyChange,
+  onUndo,
+  onRedo
 
 }: HeaderProps) {
 
@@ -62,6 +68,14 @@ export default function Header({ onTextToolClick,
       <div className={styles.header}>
         <img src={logo} className={styles.logo} alt="logo"></img>
         <div className={styles.tools}>
+          <label>
+            <img title="Отменить" src={leftArrowIcon} className={styles.leftArrowIcon} alt="undo-icon" />
+            <button className={styles.undoButton} onClick={onUndo}>Undo</button>
+          </label>
+          <label>
+          <img title="Применить" src={rightArrowIcon} className={styles.rightArrowIcon} alt="redo-icon" />
+            <button className={styles.redoButton} onClick={onRedo}>Redo</button>
+          </label>
           <label>
             <img title="Очистить холст" src={clearIcon} className={styles.clearIcon} alt="clear-icon" />
             <button id="clear-canvas" className={styles.clearCanvas} onClick={onClearCanvasClick}></button>
@@ -117,6 +131,7 @@ export default function Header({ onTextToolClick,
             <button className={styles.changeSize} onClick={onChangeButtonClick}>Применить размеры</button>
           </label> */}
         </div>
+          <div className={styles.sizesBlock}></div>
       </div>
     </header>
   );

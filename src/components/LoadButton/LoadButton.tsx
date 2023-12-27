@@ -20,10 +20,7 @@ const LoadDocument: React.FC<{ onDocumentLoad: (data: Canvas) => void }> = ({ on
                     if 
                     (
                         jsonData &&
-                        typeof jsonData.name === 'string' &&
-                        typeof jsonData.color === 'string' &&
-                        Array.isArray(jsonData.objects) &&
-                        typeof jsonData.format === 'string'
+                        Array.isArray(jsonData.objects) 
                     ) 
                     {
                         onDocumentLoad(jsonData);
@@ -47,7 +44,7 @@ const LoadDocument: React.FC<{ onDocumentLoad: (data: Canvas) => void }> = ({ on
     return (
         <label>
             <input type="file" onChange={handleFileChange} accept=".json" className={styles.button} />
-            {error && <div className={styles.error}>{error}</div>}
+            {/* {error && <div className={styles.error}>{error}</div>} */}
         </label>
     );
 };

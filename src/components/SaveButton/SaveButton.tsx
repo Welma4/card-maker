@@ -2,7 +2,7 @@ import React from 'react';
 import { Canvas } from '../../types';
 import styles from './SaveButton.module.css';
 
-const SaveButton: React.FC<{ data: Canvas | null }> = ({ data }) => {
+const SaveButton: React.FC<{ data: Canvas }> = ({ data }) => {
   const saveJSON = () => {
     const jsonString = JSON.stringify(data, null, 2);
     const blob = new Blob([jsonString], { type: 'application/json' });
@@ -19,7 +19,7 @@ const SaveButton: React.FC<{ data: Canvas | null }> = ({ data }) => {
 
   return (
     <button className={styles.button} onClick={saveJSON}>
-      Save as JSON
+      JSON
     </button>
   );
 };

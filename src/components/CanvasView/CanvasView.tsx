@@ -4,49 +4,41 @@ import ImageView from "../ImageView/ImageView";
 import styles from "./CanvasView.module.css";
 import ArtObjectView from '../ArtObjectsView/ArtObjects';
 import TextBlockView from '../TextView/TextView';
-// import { Format } from '../../types';
+import { useRef } from 'react';
 
 export interface CanvasViewProps extends Canvas {
-  // name: string | undefined,
-  // format: Format | undefined,
-  textTools: TextBlock[];
+  canv: Canvas;
+  setCanvasData: React.Dispatch<React.SetStateAction<Canvas>>;
+  texts: TextBlock[];
+  setTexts: React.Dispatch<React.SetStateAction<TextBlock[]>>;
   rectangles: ArtObjectBlock[];
+  setRectangles: React.Dispatch<React.SetStateAction<ArtObjectBlock[]>>;
   ellipses: ArtObjectBlock[];
+  setEllipses: React.Dispatch<React.SetStateAction<ArtObjectBlock[]>>;
   triangles: ArtObjectBlock[];
+  setTriangles: React.Dispatch<React.SetStateAction<ArtObjectBlock[]>>;
   images: ImageBlock[];
+  setImages: React.Dispatch<React.SetStateAction<ImageBlock[]>>;
   selectedObject: { id: number, type: string } | null;
   setSelectedObject: (obj: { id: number, type: string } | null) => void;
   handleCanvasClick: (event: React.MouseEvent<HTMLDivElement>) => void;
-  onUpdateCanvasData: (canvasData: Canvas | null) => void;
+  setCanvasRef: (canvasDivRef: React.RefObject<HTMLDivElement>) => void;
 }
 
 const CanvasView = (props: CanvasViewProps) => {
-  const [canvasData, setCanvasData] = useState<Canvas | null>(null)
+  const divRef = useRef<HTMLDivElement>(null);
   const [backgroundColor, setBackgroundColor] = useState({ r: 255, g: 255, b: 255, a: 1 });
-  
-  useEffect(() => {
-    const newCanvasData: Canvas = {
-      name: 'new-canvas',
-      color: 'white',
-      size: {width: 800, height: 600},
-      filter: {color: 'white', opacity: 0},
-      objects: [...props.textTools, ...props.images, ...props.rectangles, ...props.ellipses, ...props.triangles ],
-      format: 'PNG'
-    };
-    setCanvasData(newCanvasData);
-    props.onUpdateCanvasData(canvasData);
-  }, [props.textTools, props.rectangles, props.ellipses, props.triangles, props.images]);
 
   const handleCanvasClick = () => {
     if (props.selectedObject) {
       props.setSelectedObject(null);
     }
   };
+
   const styleProps = {
     width: `${props.size.width}px`,
     height: `${props.size.height}px`,
   };
-
 
   const handleObjectClick = (id: number, type: string) => {
     props.setSelectedObject({ id, type });
@@ -72,15 +64,68 @@ const CanvasView = (props: CanvasViewProps) => {
       b: parsedColor.b,
       a: opacity
     });
-  }, [canvasData, filter, opacity]);
+  }, [filter, opacity]);
+
+  useEffect(() => {
+    if (divRef.current) {
+      props.setCanvasRef(divRef);
+    }
+  }, [divRef]);
 
   return (
     <div
+      ref={divRef}
       className={styles.page}
       style={{ ...styleProps, backgroundColor: `rgba(${backgroundColor.r}, ${backgroundColor.g}, ${backgroundColor.b}, ${backgroundColor.a})` }}
       onClick={handleCanvasClick}
     >
-      {props.images.map((image) => (
+      {props.canv.objects.map((object, index) => {
+        switch (object.type) {
+          case 'image':
+            return <ImageView
+              key={index + object.type + object.id}
+              {...object}
+              selected={props.selectedObject && props.selectedObject.id === object.id && props.selectedObject.type === 'image'}
+              onSelect={handleObjectClick}
+              canvImages={props.images}
+              setImages={props.setImages}
+            />;
+          case 'text':
+            return <TextBlockView
+              key={index + object.type + object.id}
+              {...object}
+              selected={props.selectedObject && props.selectedObject.id === object.id && props.selectedObject.type === "text"}
+              onSelect={handleObjectClick}
+              canvTexts={props.texts}
+              setTexts={props.setTexts}
+              canvasData={props.canv}
+              setCanvasData={props.setCanvasData}
+            />;
+          case 'art-object':
+            switch (object.object) {
+              case "rectangle":
+              case "ellipse":
+              case "triangle":
+                return <ArtObjectView
+                  setRectangles={props.setRectangles}
+                  setEllipses={props.setEllipses}
+                  setTriangles={props.setTriangles}
+                  rectangles={props.rectangles}
+                  ellipses={props.ellipses}
+                  triangles={props.triangles}
+                  key={index + object.object + object.id}
+                  {...object}
+                  selected={props.selectedObject && props.selectedObject.id === object.id}
+                  onSelect={id => handleObjectClick(id, object.object)}
+                />;
+              default:
+                return null;
+            }
+          default:
+            return null;
+        }
+      })}
+      {/* {props.images.map((image) => (
         <ImageView
           key={image.id}
           {...image}
@@ -119,7 +164,7 @@ const CanvasView = (props: CanvasViewProps) => {
           selected={props.selectedObject?.id === text.id && props.selectedObject.type === "text"}
           onSelect={id => handleObjectClick(id, 'text')}
         />
-      ))}
+      ))} */}
     </div>
   );
 };

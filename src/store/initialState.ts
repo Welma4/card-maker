@@ -1,25 +1,24 @@
-const initialState = {
-    texts: [],
-    textToolActive: false,
-    underlined: false,
-    italics: false,
-    bold: false,
-    color: "#000000",
-    canvasData: null,
-    images: [],
-    imageWidth: 250,
-    imageHeight: 250,
-    rectangles: [],
-    rectangleToolActive: false,
-    ellipses: [],
-    ellipseToolActive: false,
-    triangles: [],
-    triangleToolActive: false,
-    selectedObject: null,
-    selectedValue: '12',
-    selectedFamily: 'Oswald',
-    showDialog: false,
-    canvasSize: { width: 1200, height: 700 }
-  };
-  
-  export default initialState;
+import { Canvas } from "../types";
+
+export const defaultCanvasSize = { width: 1200, height: 700 };
+export const defaultCanvasColor = "#ffffff";
+export const defaultCanvasOpacity = 1;
+export const defaultCanvasFormat = 'PNG'
+export const defaultCanvasName = 'new-canvas'
+
+export const newCanvasData: Canvas = {
+  name: defaultCanvasName,
+  size: { width: defaultCanvasSize.width, height: defaultCanvasSize.height },
+  filter: { color: defaultCanvasColor, opacity: defaultCanvasOpacity },
+  objects: [],
+  format: defaultCanvasFormat
+};
+
+export default {
+  defaultCanvasSize,
+  defaultCanvasColor,
+  defaultCanvasOpacity,
+  defaultCanvasFormat,
+  defaultCanvasName,
+  newCanvasData
+}

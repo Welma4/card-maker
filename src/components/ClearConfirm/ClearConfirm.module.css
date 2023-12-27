@@ -26,7 +26,7 @@
 
 .buttonContainer {
     display: flex;
-    width: 120px;
+    width: 130px;
     margin: 0 auto;
     justify-content: space-between;
     margin-top: 20px;
@@ -35,9 +35,10 @@
 .choiceButton {
     cursor: pointer;
     border: none;
-    width: 40px;
+    width: 50px;
     height: 25px;
     color: indigo;
+    border-radius: 5px;
     background-color:  rgb(215, 130, 236);
 }
 
