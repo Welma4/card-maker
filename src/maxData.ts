@@ -222,7 +222,6 @@ const ActHistory: ActionHistory = [addText, addEllipse, addRectangle, addTriangl
 
 const canvas: Canvas = {
     name: 'nameless',
-    color: 'white',
     size: canvSize,
     filter: filter,
     objects: [textBlock1, ellipseBlock, rectangleBlock, triangleBlock, image1Block],

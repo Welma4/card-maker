@@ -179,6 +179,7 @@
     outline: 0;
     outline-offset: 0;
     text-align: center;
+    border-radius: 5px;
 }
 .heightInput {
     margin-left: 10px;
@@ -190,6 +191,7 @@
     outline: 0;
     outline-offset: 0;
     text-align: center;
+    border-radius: 5px;
 }
 
 .changeSize {
@@ -207,4 +209,38 @@
 
 .changeSize:hover {
     background-color: rgb(232, 182, 235);
+}
+
+.leftArrowIcon {
+    width: 50px;
+    height: 30px;
+    cursor: pointer;
+}
+
+.undoButton {
+    width: 50px;
+    height: 30px;
+    pointer-events: none;
+    position: absolute;
+    opacity: 0;
+}
+
+.rightArrowIcon {
+    width: 50px;
+    height: 30px;
+    cursor: pointer;
+    margin-right: 15px;
+}
+
+.redoButton {
+    width: 50px;
+    height: 30px;
+    pointer-events: none;
+    position: absolute;
+    opacity: 0;
+}
+
+.sizesBlock {
+    width: 200px;
+    height: 120px;
 }

@@ -31,10 +31,11 @@
 .canvasOpacity {
     display: flex;
     align-items: center;
+    margin-right: 30px;
 }
 
 .opacityInput {
-    width: 50px;
+    width: 60px;
     height: 25px;
 }
 
@@ -104,4 +105,25 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+
+.saveContainer {
+    margin-right: 30px;
+}
+
+.saveAsImageButton {
+    width: 120px;
+    height: 25px;
+    border: none;
+    background-color: rgb(215, 130, 236);
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 10px;
+    color: indigo;
+}
+
+.canvasJson {
+    display: flex;
+    align-items: center;
+    width: 100px;
 }

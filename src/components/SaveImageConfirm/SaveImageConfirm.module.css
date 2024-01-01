@@ -1,0 +1,140 @@
+.container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.35); 
+    align-items: center;
+    z-index: 10;
+}
+
+.warning {
+    font: normal bold 16px/1.2 Arial;
+    color: indigo
+}
+
+.confirmWindow {
+    width: 400px;
+    height: 250px;
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+    background-color: rgb(237, 215, 250);
+}
+
+.buttonContainer {
+    display: flex;
+    width: 130px;
+    margin: 0 auto;
+    justify-content: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+
+.choiceButton {
+    cursor: pointer;
+    border: none;
+    width: 75px;
+    height: 25px;
+    color: indigo;
+    border-radius: 5px;
+    background-color:  rgb(215, 130, 236);
+}
+
+.choiceButton:hover {
+    background-color: rgb(232, 182, 235);
+    transition: background-color 0.3s ease-in-out;
+}
+
+.nameContainer {
+    width: 175px;
+    margin-bottom: 20px;
+}
+
+
+.name {
+    font: normal normal 16px/1.2 Arial;
+    color: indigo;
+    margin-bottom: 5px;
+}
+
+.nameInput {
+    color: indigo;
+    height: 22px;
+    border-radius: 5px;
+    text-align: center;
+    background-color: rgb(232, 156, 235);
+    border: none;
+    outline: 0;
+    outline-offset: 0;
+}
+
+.formatButtonsContainer {
+    display: flex;
+    justify-content: space-between;
+    height: 32px;
+}
+
+.format {
+    font: normal normal 16px/1.2 Arial;
+    color: indigo;
+    margin-bottom: 5px;
+}
+
+.formatContainer {
+    width: 200px;
+    margin-bottom: 40px;
+}
+
+.formatButton {
+    width: 50px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: indigo;
+    font-size: 14px;
+    background-color: rgb(232, 156, 235);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.formatButton:hover {
+    background-color: rgb(232, 182, 235);
+    transition: background-color 0.3s ease-in-out;
+}
+
+.selectedFormatButton:hover {
+    background-color: rgb(232, 182, 235);
+    transition: background-color 0.3s ease-in-out;
+}
+
+.selectedFormatButton {
+    width: 50px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: indigo;
+    font-size: 16px;
+    background-color: rgb(213, 126, 224);
+    border-width: 2px;
+    border: indigo;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.choiceButtons {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 200px;
+    margin: 0 auto;
+}
+

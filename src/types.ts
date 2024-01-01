@@ -1,16 +1,9 @@
-export const ActionTypes = {
-    SET_TEXTS: 'SET_TEXTS',
-    SET_TEXT_TOOL_ACTIVE: 'SET_TEXT_TOOL_ACTIVE',
-  };
-
-
 export type Canvas = {
-    name: string | undefined;
-    color: Color;
+    name: string;
     size: Size;
     filter: Filter;
     objects: Array<TextBlock | ImageBlock | ArtObjectBlock>;
-    format: Format | undefined;
+    format: Format;
 };
 
 export type Char = {
@@ -23,7 +16,7 @@ export type Char = {
     bold: boolean;
 };
 
-export type Format = 'PNG' | 'JPEG'
+export type Format = 'PNG' | 'JPEG' | null
 
 export type Position = {
     x: number;

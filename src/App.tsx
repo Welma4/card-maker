@@ -1,14 +1,16 @@
-import React, { useState, ChangeEvent, useEffect } from 'react';
+import React, { useState, ChangeEvent, useEffect, useRef } from 'react';
 import './App.css';
 import { doc } from './maxData';
-import { Canvas, TextBlock, Size, ImageBlock, ArtObjectBlock } from './types';
+import { Canvas, TextBlock, Size, ImageBlock, ArtObjectBlock, Format } from './types';
 import CanvasView from './components/CanvasView/CanvasView';
 import SaveButton from './components/SaveButton/SaveButton';
 import LoadDocument from './components/LoadButton/LoadButton';
 import Header from './components/Header/Header';
 import ClearConfirmationDialog from './components/ClearConfirm/ClearConfirm';
 import Footer from './components/Footer/Footer';
-// import { useDispatch, useSelector } from 'react-redux';
+import { newCanvasData, defaultCanvasSize, defaultCanvasColor, defaultCanvasOpacity, defaultCanvasFormat, defaultCanvasName } from './store/initialState'
+import SaveConfirmationDialog from './components/SaveImageConfirm/SaveImageConfirm';
+import HandleSaveAsImage from './components/SaveAsImage/SaveAsImage';
 
 const App = () => {
   const [texts, setTexts] = useState<TextBlock[]>([]);
@@ -17,7 +19,6 @@ const App = () => {
   const [italics, setItalics] = useState(false);
   const [bold, setBold] = useState(false);
   const [color, setColor] = useState("#000000")
-  const [canvasData, setCanvasData] = useState<Canvas | null>(null);
   const [images, setImages] = useState<ImageBlock[]>([]);
   const [imageWidth, setImageWidth] = useState(250);
   const [imageHeight, setImageHeight] = useState(250);
@@ -31,29 +32,33 @@ const App = () => {
   const [selectedValue, setSelectedValue] = useState('12');
   const [selectedFamily, setSelectedFamily] = useState('Oswald');
   const [showDialog, setShowDialog] = useState(false);
+  const [showSaveWindow, setShowSaveWindow] = useState(false);
   const [marginWidth, setMarginWidth] = useState<number>(0);
-  const [marginHeight, setMarginHeight] = useState<number>(0)
-
-  const defaultCanvasSize = { width: 1200, height: 700 };
-  const defaultCanvasColor = "#ffffff";
-  const defaultCanvasOpacity = 1;
+  const [marginHeight, setMarginHeight] = useState<number>(0);
 
   const [canvasSize, setCanvasSize] = useState<Size>(defaultCanvasSize)
   const [canvasColor, setCanvasColor] = useState(defaultCanvasColor)
   const [canvasOpacity, setCanvasOpacity] = useState(defaultCanvasOpacity)
+  const [canvasName, setCanvasName] = useState('new-canvas');
+  const [canvasFormat, setCanvasFormat] = useState<Format>("PNG");
+
+  const [canvasData, setCanvasData] = useState<Canvas>(newCanvasData);
+
+  const [undoStack, setUndoStack] = useState<Canvas[]>([]);
+  const [redoStack, setRedoStack] = useState<Canvas[]>([]);
+
+  const canvasRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const newCanvasData: Canvas = {
-      name: 'new-canvas',
-      color: 'white',
-      size: { width: 800, height: 600 },
-      filter: { color: 'white', opacity: 0 },
+    const updatedCanvasData: Canvas = {
+      name: canvasName,
+      size: { width: canvasSize.width, height: canvasSize.height },
+      filter: { color: canvasColor, opacity: canvasOpacity },
       objects: [...texts, ...images, ...rectangles, ...ellipses, ...triangles],
-      format: 'PNG'
-    };
-    setCanvasData(newCanvasData);
-    console.log(canvasData)
-  }, [...texts, ...images, ...rectangles, ...ellipses, ...triangles]);
+      format: canvasFormat
+    }
+    setCanvasData(updatedCanvasData);
+  }, [texts, images, rectangles, ellipses, triangles, canvasColor, canvasOpacity, canvasSize, canvasFormat, canvasName])
 
   const handleSelectedValueChange = (value: string) => {
     setSelectedValue(value);
@@ -76,7 +81,6 @@ const App = () => {
     if (selectedObject && selectedObject.type === 'text') {
       const updatedTexts = texts.map((text) => {
         if (text.id === selectedObject.id) {
-          console.log(selectedFamily)
           return {
             ...text,
             fontFamily: value,
@@ -144,18 +148,6 @@ const App = () => {
           break;
       }
     }
-  };
-
-
-  const canv: Canvas | null = {
-    name: doc.page.name,
-    color: doc.page.color,
-    // size: doc.page.size,
-    size: canvasSize,
-    // filter: doc.page.filter,
-    filter: { color: canvasColor, opacity: canvasOpacity },
-    objects: [...doc.page.objects],
-    format: doc.page.format
   };
 
   const handleTextToolClick = () => {
@@ -254,7 +246,7 @@ const App = () => {
       const newText: TextBlock = {
         id: Date.now(),
         position: { x: event.nativeEvent.offsetX, y: event.nativeEvent.offsetY, z: 1 },
-        size: { width: 150, height: 40 },
+        size: { width: 200, height: 80 },
         type: 'text',
         data: [''],
         fontSize: +selectedValue,
@@ -362,11 +354,6 @@ const App = () => {
   };
 
 
-  const handleDocumentLoad = (data: Canvas) => {
-    setCanvasData(data);
-    console.log("LOADED DATA: ", data)
-  };
-
   const handleImageWidthToolClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     setImageWidth(parseInt(event.target.value));
   }
@@ -375,10 +362,6 @@ const App = () => {
     setImageHeight(parseInt(event.target.value));
   }
 
-  const handleCanvasDataUpdate = (canvasData: Canvas | null) => {
-    console.log(canvasData);
-    setCanvasData(canvasData)
-  };
 
   const handleCanvasSizeChange = (newSize: Size) => {
     setCanvasSize(newSize);
@@ -390,7 +373,7 @@ const App = () => {
 
   const handleCanvasOpacityChange = (newOpacity: number) => {
     setCanvasOpacity(newOpacity);
-};
+  };
 
   useEffect(() => {
     const marginWidthCalc = (window.innerWidth - canvasSize.width) / 2;
@@ -400,6 +383,83 @@ const App = () => {
     setMarginHeight(marginHeightCalc);
   }, [canvasSize, window.innerWidth, window.innerHeight]);
 
+
+  // отмена последнего действия 
+  const handleUndo = () => {
+    if (undoStack.length > 0) {
+      const previousCanvasData = undoStack[undoStack.length - 4];
+      if (previousCanvasData) {
+        setCanvasData(previousCanvasData);
+        setTexts(previousCanvasData.objects.filter(obj => obj.type === 'text') as TextBlock[]);
+        setImages(previousCanvasData.objects.filter(obj => obj.type === 'image') as ImageBlock[]);
+        setRectangles(previousCanvasData.objects.filter(obj => obj.type === 'art-object' && obj.object === "rectangle") as ArtObjectBlock[]);
+        setEllipses(previousCanvasData.objects.filter(obj => obj.type === 'art-object' && obj.object === "ellipse") as ArtObjectBlock[]);
+        setTriangles(previousCanvasData.objects.filter(obj => obj.type === 'art-object' && obj.object === "triangle") as ArtObjectBlock[]);
+        setCanvasSize(previousCanvasData.size);
+        setCanvasColor(previousCanvasData.filter.color);
+        setCanvasOpacity(previousCanvasData.filter.opacity);
+      }
+      setUndoStack(undoStack.slice(0, undoStack.length - 4));
+      setRedoStack([canvasData, ...redoStack]);
+    }
+  };
+
+  // применение последнего отмененного действия
+  const handleRedo = () => {
+    if (redoStack.length > 0) {
+      const nextCanvasData = redoStack[redoStack.length - 1];
+      if (nextCanvasData) {
+        setCanvasData(nextCanvasData);
+        setTexts(nextCanvasData.objects.filter(obj => obj.type === 'text') as TextBlock[]);
+        setImages(nextCanvasData.objects.filter(obj => obj.type === 'image') as ImageBlock[]);
+        setRectangles(nextCanvasData.objects.filter(obj => obj.type === 'art-object' && obj.object === "rectangle") as ArtObjectBlock[]);
+        setEllipses(nextCanvasData.objects.filter(obj => obj.type === 'art-object' && obj.object === "ellipse") as ArtObjectBlock[]);
+        setTriangles(nextCanvasData.objects.filter(obj => obj.type === 'art-object' && obj.object === "triangle") as ArtObjectBlock[]);
+        setCanvasSize(nextCanvasData.size);
+        setCanvasColor(nextCanvasData.filter.color);
+        setCanvasOpacity(nextCanvasData.filter.opacity);
+      }
+      setRedoStack(redoStack.slice(0, redoStack.length - 1));
+      setUndoStack([canvasData, ...undoStack]);
+    }
+  };
+
+
+  // сохраняем слепок холста при изменении холста
+  useEffect(() => {
+    setUndoStack(prevUndoStack => [...prevUndoStack, canvasData]);
+    console.log(canvasData)
+  }, [canvasData]);
+
+
+  // ссылка на холст для последующего скачивания в формате PNG/JPEG
+  const handleSetCanvasRef = (newRef: React.RefObject<HTMLDivElement>) => {
+    canvasRef.current = newRef.current;
+  }
+
+  const handleToggleSaveWindow = (show: boolean) => {
+    setShowSaveWindow(show);
+  }
+
+  // получаем введенное название 
+  const handleImageNameChange = (name: string) => {
+    setCanvasName(name);
+  };
+
+  // получаем выбранный формат
+  const handleImageFormatChange = (format: Format) => {
+    setCanvasFormat(format);
+  };
+
+  // если пользователь подтвердил загрузку, вызываем функцию для скачивания и передаем туда полученные название и формат
+  const handleConfirmSave = () => {
+    HandleSaveAsImage(canvasRef, canvasName, canvasFormat);
+    setShowSaveWindow(false);
+  }
+
+  const handleCancelSave = () => {
+    setShowSaveWindow(false);
+  }
 
   return (
     <div className="App" >
@@ -423,21 +483,30 @@ const App = () => {
         italics={italics}
         bold={bold}
         selectedValue={selectedValue}
+        onUndo={handleUndo}
+        onRedo={handleRedo}
       />
       <div className='wrapper' style={{ margin: `${marginHeight}px ${marginWidth}px` }} onClick={handleCanvasClick}>
         <div onClick={handlePlaceRectangle}>
           <div onClick={handlePlaceEllipse}>
             <div onClick={handlePlaceTriangle}>
-              <CanvasView {...canv}
-                textTools={texts}
+              <CanvasView {...canvasData}
+                canv={canvasData}
+                setCanvasData={setCanvasData}
+                texts={texts}
+                setTexts={setTexts}
                 rectangles={rectangles}
+                setRectangles={setRectangles}
                 ellipses={ellipses}
+                setEllipses={setEllipses}
                 triangles={triangles}
+                setTriangles={setTriangles}
                 images={images}
+                setImages={setImages}
                 selectedObject={selectedObject}
                 setSelectedObject={setSelectedObject}
                 handleCanvasClick={handleCanvasClick}
-                onUpdateCanvasData={handleCanvasDataUpdate}
+                setCanvasRef={handleSetCanvasRef}
               />
               {showDialog && (
                 <ClearConfirmationDialog
@@ -445,13 +514,37 @@ const App = () => {
                   onCancel={handleCancelClear}
                 />
               )}
-              {/* <SaveButton data={canvasData} />
-              <LoadDocument onDocumentLoad={handleDocumentLoad} /> */}
+              {/* окно подтверждения загрузки */}
+              {showSaveWindow && (
+                <SaveConfirmationDialog
+                  onConfirm={handleConfirmSave}
+                  onCancel={handleCancelSave}
+                  onImageNameChange={handleImageNameChange}
+                  onImageFormatChange={handleImageFormatChange}
+                  canvasName={canvasName}
+                />
+              )}
             </div>
           </div>
         </div>
       </div>
-      <Footer onChangeCanvasSize={handleCanvasSizeChange} onChangeCanvasColor={handleCanvasColorChange} onChangeCanvasOpacity={handleCanvasOpacityChange} />
+      <Footer
+        setCanvasData={setCanvasData}
+        setTexts={setTexts}
+        setImages={setImages}
+        setRectangles={setRectangles}
+        setEllipses={setEllipses}
+        setTriangles={setTriangles}
+        setCanvasColor={setCanvasColor}
+        setCanvasOpacity={setCanvasOpacity}
+        setCanvasSize={setCanvasSize}
+        canvasRef={canvasRef}
+        canvasData={canvasData}
+        onChangeCanvasSize={handleCanvasSizeChange}
+        onChangeCanvasColor={handleCanvasColorChange}
+        onChangeCanvasOpacity={handleCanvasOpacityChange}
+        onToggleSaveWindow={handleToggleSaveWindow}
+      />
     </div>
   );
 }

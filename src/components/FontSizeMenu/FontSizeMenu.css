@@ -18,10 +18,12 @@
 
 .menu__button:hover {
     background-color: rgb(190, 123, 194);
+    transition: background-color 0.3s ease-in-out;
 }
 
 .dropdown__item_value:hover {
     background-color: rgb(195, 128, 199);
+    transition: background-color 0.3s ease-in-out;
 }
 
 .menu__buttonn {
@@ -37,6 +39,7 @@
 
 .menu__buttonn:hover {
     background-color: rgb(232, 182, 235);
+    transition: background-color 0.3s ease-in-out;
 }
 
 .dropdown {

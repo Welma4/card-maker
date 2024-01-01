@@ -12,7 +12,6 @@ const nullFilter: Filter = {
 
 const canvas: Canvas = {
     name: 'nameless',
-    color: 'white',
     size: size,
     filter: nullFilter,
     objects: [],
